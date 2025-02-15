@@ -41,7 +41,7 @@ function exibirConvites() {
     listaConvites.innerHTML = '';
     const convites = JSON.parse(localStorage.getItem('convites')) || [];
     
-    convites.forEach(convite => {
+    convites.forEach((convite, index) => {
         const div = document.createElement('div');
         div.classList.add('col');
         div.innerHTML = `
@@ -51,7 +51,10 @@ function exibirConvites() {
                     ${convite.status}
                 </span>
                 <button class="btn btn-sm btn-info" onclick="enviarQRCodeWhatsApp('${convite.nome}', '${convite.url}')">
-                    Enviar via WhatsApp
+                    📲 WhatsApp
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="excluirConvite(${index})">
+                    🗑️
                 </button>
             </div>
         `;
@@ -59,21 +62,32 @@ function exibirConvites() {
     });
 }
 
-// Função para enviar QR Code via WhatsApp como imagem
+// Função para enviar QR Code via WhatsApp
 function enviarQRCodeWhatsApp(nome, qrUrl) {
-    const whatsappMessage = `Olá, ${nome}! Aqui está o seu convite para o evento. Apresente este QR Code na entrada.`;
-    const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}&media=${qrUrl}`;
+    const whatsappMessage = `Olá, ${nome}! Aqui está o seu convite para o evento. Apresente este QR Code na entrada. Baixe a imagem aqui: ${qrUrl}`;
+    const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
 
     window.open(whatsappLink, '_blank');
 }
 
-// Função para validar QR Code via câmera
+// Função para excluir convite
+function excluirConvite(index) {
+    let convites = JSON.parse(localStorage.getItem('convites')) || [];
+    convites.splice(index, 1); // Remove o convite pelo índice
+    localStorage.setItem('convites', JSON.stringify(convites));
+    exibirConvites(); // Atualiza a lista
+}
+
+// Variável para o scanner
+let html5QrCode;
+
+// Função para iniciar a leitura do QR Code via câmera
 function iniciarLeitura() {
     console.log("Função iniciarLeitura chamada!");
     const resultadoValidacao = document.getElementById('resultado-validacao');
     resultadoValidacao.textContent = 'Aguardando escaneamento do QR Code...';
 
-    const html5QrCode = new Html5Qrcode("qr-reader");  // Correção aqui
+    html5QrCode = new Html5Qrcode("qr-reader");
     html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
@@ -88,6 +102,17 @@ function iniciarLeitura() {
     ).catch(err => {
         console.error("Erro ao iniciar o scanner: ", err);
     });
+}
+
+// Função para parar a leitura do QR Code
+function pararLeitura() {
+    if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+            console.log("Leitura interrompida!");
+        }).catch(err => {
+            console.error("Erro ao parar a leitura:", err);
+        });
+    }
 }
 
 // Exibir QR Codes ao carregar a página
