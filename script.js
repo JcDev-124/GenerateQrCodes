@@ -35,7 +35,7 @@ function salvarQRCode(nome, url, qrData) {
     exibirConvites();
 }
 
-// Função para exibir QR Codes de forma estilizada
+// Função para exibir QR Codes na horizontal
 function exibirConvites() {
     const listaConvites = document.getElementById('lista-qrcodes');
     listaConvites.innerHTML = '';
@@ -59,28 +59,12 @@ function exibirConvites() {
     });
 }
 
-// Função para gerar PDF e enviar via WhatsApp
+// Função para enviar QR Code via WhatsApp como imagem
 function enviarQRCodeWhatsApp(nome, qrUrl) {
-    const docDefinition = {
-        content: [
-            { text: `Convite para ${nome}`, style: 'header' },
-            { image: qrUrl, width: 200, alignment: 'center' },
-            { text: 'Apresente este QR Code na entrada do evento.', margin: [0, 20, 0, 0] }
-        ],
-        styles: {
-            header: { fontSize: 18, bold: true, alignment: 'center' }
-        }
-    };
+    const whatsappMessage = `Olá, ${nome}! Aqui está o seu convite para o evento. Apresente este QR Code na entrada.`;
+    const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}&media=${qrUrl}`;
 
-    pdfMake.createPdf(docDefinition).getBlob(blob => {
-        const file = new File([blob], `Convite_${nome}.pdf`, { type: "application/pdf" });
-        const fileURL = URL.createObjectURL(file);
-
-        const whatsappMessage = `Olá, ${nome}! Aqui está o seu convite para o evento. Apresente este QR Code na entrada.`;
-        const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
-        
-        window.open(whatsappLink, '_blank');
-    });
+    window.open(whatsappLink, '_blank');
 }
 
 // Função para validar QR Code via câmera
@@ -89,7 +73,7 @@ function iniciarLeitura() {
     const resultadoValidacao = document.getElementById('resultado-validacao');
     resultadoValidacao.textContent = 'Aguardando escaneamento do QR Code...';
 
-    const html5QrCode = new Html5Qrcode("qr-reader");
+    const html5QrCode = new Html5Qrcode("qr-reader");  // Correção aqui
     html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
