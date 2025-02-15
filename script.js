@@ -97,9 +97,12 @@ function iniciarLeitura() {
 
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
-            console.log("⏹ Parando leitor ativo...");
-            iniciarScanner();
-        }).catch(err => console.error("❌ Erro ao parar leitor anterior:", err));
+            console.log("⏹ Scanner parado! Reiniciando...");
+            iniciarScanner(); // Reinicia corretamente
+        }).catch(err => {
+            console.error("❌ Erro ao parar scanner:", err);
+            iniciarScanner(); // Garante que será iniciado mesmo se houver erro
+        });
     } else {
         iniciarScanner();
     }
@@ -112,9 +115,9 @@ function iniciarScanner() {
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
         (decodedText) => {
-            console.log("✅ QR Code escaneado com sucesso:", decodedText);
+            console.log("✅ QR Code escaneado:", decodedText);
             validarQRCode(decodedText);
-            html5QrCode.stop().then(() => console.log("⏹ Leitura finalizada."));
+            setTimeout(() => iniciarLeitura(), 2000); // Reinicia após 2s
         },
         (errorMessage) => {
             console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
@@ -125,25 +128,6 @@ function iniciarScanner() {
     });
 }
 
-function iniciarScanner() {
-    html5QrCode = new Html5Qrcode("qr-reader");
-
-    html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (decodedText) => {
-            console.log("✅ QR Code escaneado com sucesso:", decodedText);
-            validarQRCode(decodedText);
-            html5QrCode.stop().then(() => console.log("⏹ Leitura finalizada."));
-        },
-        (errorMessage) => {
-            console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
-        }
-    ).catch(err => {
-        console.error("❌ Erro ao iniciar scanner:", err);
-        alert("⚠️ Verifique as permissões da câmera!");
-    });
-}
 // Função para parar a leitura do QR Code
 function pararLeitura() {
     if (html5QrCode) {
@@ -183,3 +167,8 @@ function validarQRCode(qrData) {
         resultadoValidacao.classList.add('text-danger');
     }
 }
+
+window.onload = function() {
+    exibirConvites(); // Exibir convites ao carregar o site
+    console.log("📜 Convites carregados na inicialização!");
+};
