@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validador de QR Codes - Festa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-   <!-- Bibliotecas corrigidas -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-   <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/vfs_fonts.js"></script>
 </head>
 <body class="bg-light">
     <div class="container my-5">
@@ -17,7 +17,7 @@
             <p class="lead text-secondary">Gerencie os convites e valide com QR Codes</p>
         </div>
 
-        <!-- Criar QR Code -->
+        <!-- Formulário para criar QR Code -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Criar Novo Convite</h2>
@@ -32,15 +32,15 @@
             </div>
         </div>
 
-        <!-- Lista de QR Codes -->
+        <!-- Lista de QR Codes Criados -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Convites Criados</h2>
-                <div id="lista-qrcodes" class="row row-cols-1 row-cols-md-3 g-4"></div>
+                <div id="lista-qrcodes" class="row row-cols-1 g-4"></div>
             </div>
         </div>
 
-        <!-- Validação via Câmera -->
+        <!-- Formulário para validar QR Code via câmera -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Validar QR Code</h2>
@@ -53,7 +53,6 @@
         </div>
     </div>
 
-    <!-- Carregando script corrigido -->
     <script src="script.js"></script>
 </body>
 </html>
