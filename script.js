@@ -117,7 +117,7 @@ function iniciarScanner() {
         (decodedText) => {
             console.log("✅ QR Code escaneado:", decodedText);
             validarQRCode(decodedText);
-            pararLeitura()
+            
         },
         (errorMessage) => {
             console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
@@ -162,13 +162,12 @@ function validarQRCode(qrData) {
             resultadoValidacao.textContent = `⚠️ Convite já validado em: ${conviteValido.validadoEm}`;
             resultadoValidacao.classList.remove('text-success');
             resultadoValidacao.classList.add('text-warning');
-            pararLeitura()
+            
         }
     } else {
         resultadoValidacao.textContent = '❌ Convite inválido!';
         resultadoValidacao.classList.remove('text-success', 'text-warning');
         resultadoValidacao.classList.add('text-danger');
-        pararLeitura()
     }
 }
 
