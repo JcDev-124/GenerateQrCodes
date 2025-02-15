@@ -92,13 +92,14 @@ function excluirConvite(index) {
     exibirConvites();
 }
 
-let html5QrCode;
+let html5QrCode = null; // Garante que a variável pode ser recriada
 
 function iniciarLeitura() {
     console.log("📷 Iniciando leitura do QR Code...");
     const resultadoValidacao = document.getElementById('resultado-validacao');
     resultadoValidacao.textContent = '🔍 Aguardando escaneamento do QR Code...';
 
+    // Se já existe uma instância, pare e recrie
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
             console.log("⏹ Scanner parado! Reiniciando...");
@@ -113,6 +114,13 @@ function iniciarLeitura() {
 }
 
 function iniciarScanner() {
+    console.log("📡 Iniciando scanner...");
+    
+    // Se o scanner já existe, primeiro pare antes de recriar
+    if (html5QrCode) {
+        html5QrCode.stop().catch(err => console.warn("Erro ao parar scanner:", err));
+    }
+
     html5QrCode = new Html5Qrcode("qr-reader");
 
     html5QrCode.start(
@@ -121,7 +129,6 @@ function iniciarScanner() {
         (decodedText) => {
             console.log("✅ QR Code escaneado:", decodedText);
             validarQRCode(decodedText);
-            pararLeitura()
         },
         (errorMessage) => {
             console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
@@ -135,13 +142,14 @@ function iniciarScanner() {
 function pararLeitura() {
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
-            console.log("Leitura interrompida!");
+            console.log("🛑 Leitura interrompida!");
             document.getElementById('resultado-validacao').textContent = 'Leitura interrompida.';
         }).catch(err => {
             console.error("Erro ao parar a leitura:", err);
         });
     }
 }
+
 
 function validarQRCode(qrData) {
     console.log("Função validarQRCode chamada com dados:", qrData);
