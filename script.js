@@ -132,13 +132,15 @@ function iniciarScanner() {
 function pararLeitura() {
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
-            console.log("Leitura interrompida!");
+            console.log("🛑 Leitura interrompida!");
             document.getElementById('resultado-validacao').textContent = 'Leitura interrompida.';
+            html5QrCode = null; // Reseta a variável para permitir reinício
         }).catch(err => {
-            console.error("Erro ao parar a leitura:", err);
+            console.error("❌ Erro ao parar a leitura:", err);
         });
     }
 }
+
 
 // Função para validar o QR Code lido
 function validarQRCode(qrData) {
