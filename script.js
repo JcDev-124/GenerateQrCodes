@@ -121,6 +121,7 @@ function iniciarScanner() {
         (decodedText) => {
             console.log("✅ QR Code escaneado:", decodedText);
             validarQRCode(decodedText);
+            pararLeitura()
         },
         (errorMessage) => {
             console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
