@@ -1,33 +1,27 @@
-body {
-    font-family: Arial, sans-serif;
-}
-
-h1 {
-    color: #5c6bc0;
-}
-
-.card {
-    border-radius: 10px;
-}
-
-#lista-qrcodes {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
+/* Estilo para os cards de QR Code */
 .qrcode {
-    margin: 10px;
     text-align: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
 }
 
+/* Estilo para as imagens dos QR Codes */
 .qrcode img {
-    width: 150px;
-    height: 150px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
 }
 
-.btn-primary, .btn-success {
-    width: 100%;
+/* Estilo para o container da câmera */
+#camera-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Estilo para o resultado da validação */
+#resultado-validacao {
+    font-size: 1.25rem;
+    font-weight: bold;
 }
