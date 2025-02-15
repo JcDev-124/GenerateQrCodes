@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #5c6bc0;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+#lista-qrcodes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.qrcode {
+    margin: 10px;
+    text-align: center;
+}
+
+.qrcode img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary, .btn-success {
+    width: 100%;
+}
