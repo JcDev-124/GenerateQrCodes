@@ -6,24 +6,32 @@ function gerarQRCode() {
         const id = Math.random().toString(36).substr(2, 9); // ID único
         const qrData = `${nome.replace(/\s+/g, "_")}-${id}`; // Substitui espaços por _
 
-        // Gera QR Code como imagem base64
-        const canvas = document.createElement('canvas');
-        QRCode.toCanvas(canvas, qrData, { width: 200, errorCorrectionLevel: 'H' }, function (err) {
-            if (err) {
-                console.error("❌ Erro ao gerar QR Code:", err);
-                return;
-            }
+        // Criar elemento div para o QR Code
+        const divQRCode = document.createElement('div');
 
-            const qrUrl = canvas.toDataURL("image/png"); // Converte para imagem
-            salvarQRCode(nome, qrUrl, qrData);
+        // Gera o QR Code usando a biblioteca correta
+        const qr = new QRCode(divQRCode, {
+            text: qrData,
+            width: 200,
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.H
         });
+
+        // Esperar o QR Code ser gerado antes de salvar
+        setTimeout(() => {
+            const canvas = divQRCode.querySelector("canvas");
+            if (canvas) {
+                const qrUrl = canvas.toDataURL("image/png"); // Converte para imagem
+                salvarQRCode(nome, qrUrl, qrData);
+            } else {
+                console.error("❌ Erro: QR Code não foi gerado corretamente.");
+            }
+        }, 500);
     } else {
         alert('⚠️ Por favor, insira um nome.');
     }
 }
 
-
-// Função para salvar o QR Code no localStorage
 function salvarQRCode(nome, url, qrData) {
     let convites = JSON.parse(localStorage.getItem('convites')) || [];
     convites.push({ nome, url, qrData, status: 'pendente' });
@@ -31,7 +39,6 @@ function salvarQRCode(nome, url, qrData) {
     exibirConvites();
 }
 
-// Função para exibir QR Codes na horizontal
 function exibirConvites() {
     const listaConvites = document.getElementById('lista-qrcodes');
     listaConvites.innerHTML = '';
@@ -58,10 +65,9 @@ function exibirConvites() {
     });
 }
 
-// Função para compartilhar QR Code via WhatsApp ou qualquer app
 function compartilharQRCode(nome, qrUrl) {
     fetch(qrUrl)
-        .then(res => res.blob()) // Converte a URL em um arquivo Blob
+        .then(res => res.blob())
         .then(blob => {
             const file = new File([blob], `${nome}-qrcode.png`, { type: blob.type });
 
@@ -79,15 +85,13 @@ function compartilharQRCode(nome, qrUrl) {
         .catch(error => console.error("Erro ao obter o QR Code:", error));
 }
 
-// Função para excluir convite
 function excluirConvite(index) {
     let convites = JSON.parse(localStorage.getItem('convites')) || [];
-    convites.splice(index, 1); // Remove o convite pelo índice
+    convites.splice(index, 1);
     localStorage.setItem('convites', JSON.stringify(convites));
-    exibirConvites(); // Atualiza a lista
+    exibirConvites();
 }
 
-// Variável global para o leitor de QR Code
 let html5QrCode;
 
 function iniciarLeitura() {
@@ -98,10 +102,10 @@ function iniciarLeitura() {
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
             console.log("⏹ Scanner parado! Reiniciando...");
-            iniciarScanner(); // Reinicia corretamente
+            iniciarScanner();
         }).catch(err => {
             console.error("❌ Erro ao parar scanner:", err);
-            iniciarScanner(); // Garante que será iniciado mesmo se houver erro
+            iniciarScanner();
         });
     } else {
         iniciarScanner();
@@ -117,7 +121,6 @@ function iniciarScanner() {
         (decodedText) => {
             console.log("✅ QR Code escaneado:", decodedText);
             validarQRCode(decodedText);
-            
         },
         (errorMessage) => {
             console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
@@ -128,21 +131,17 @@ function iniciarScanner() {
     });
 }
 
-// Função para parar a leitura do QR Code
 function pararLeitura() {
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
-            console.log("🛑 Leitura interrompida!");
+            console.log("Leitura interrompida!");
             document.getElementById('resultado-validacao').textContent = 'Leitura interrompida.';
-            html5QrCode = null; // Reseta a variável para permitir reinício
         }).catch(err => {
-            console.error("❌ Erro ao parar a leitura:", err);
+            console.error("Erro ao parar a leitura:", err);
         });
     }
 }
 
-
-// Função para validar o QR Code lido
 function validarQRCode(qrData) {
     console.log("Função validarQRCode chamada com dados:", qrData);
     const convites = JSON.parse(localStorage.getItem('convites')) || [];
@@ -162,7 +161,6 @@ function validarQRCode(qrData) {
             resultadoValidacao.textContent = `⚠️ Convite já validado em: ${conviteValido.validadoEm}`;
             resultadoValidacao.classList.remove('text-success');
             resultadoValidacao.classList.add('text-warning');
-            
         }
     } else {
         resultadoValidacao.textContent = '❌ Convite inválido!';
@@ -172,6 +170,6 @@ function validarQRCode(qrData) {
 }
 
 window.onload = function() {
-    exibirConvites(); // Exibir convites ao carregar o site
+    exibirConvites();
     console.log("📜 Convites carregados na inicialização!");
 };
