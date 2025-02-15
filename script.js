@@ -1,31 +1,27 @@
-// Função para gerar o QR Code
 function gerarQRCode() {
-    console.log("Função gerarQRCode chamada!");
-    const nome = document.getElementById('nome').value;
+    console.log("⚙️ Função gerarQRCode chamada!");
+    const nome = document.getElementById('nome').value.trim();
 
     if (nome) {
-        const id = Math.random().toString(36).substr(2, 9);
-        const qrData = `${nome}-${id}`;
+        const id = Math.random().toString(36).substr(2, 9); // ID único
+        const qrData = `${nome.replace(/\s+/g, "_")}-${id}`; // Substitui espaços por _
 
-        const divQRCode = document.createElement('div');
-        const qrcode = new QRCode(divQRCode, {
-            text: qrData,
-            width: 200,
-            height: 200
-        });
-
-        setTimeout(() => {
-            const img = divQRCode.querySelector("img");
-            if (img) {
-                salvarQRCode(nome, img.src, qrData);
-            } else {
-                console.error("Erro ao capturar a imagem do QR Code.");
+        // Gera QR Code como imagem base64
+        const canvas = document.createElement('canvas');
+        QRCode.toCanvas(canvas, qrData, { width: 200, errorCorrectionLevel: 'H' }, function (err) {
+            if (err) {
+                console.error("❌ Erro ao gerar QR Code:", err);
+                return;
             }
-        }, 500);
+
+            const qrUrl = canvas.toDataURL("image/png"); // Converte para imagem
+            salvarQRCode(nome, qrUrl, qrData);
+        });
     } else {
-        alert('Por favor, insira um nome.');
+        alert('⚠️ Por favor, insira um nome.');
     }
 }
+
 
 // Função para salvar o QR Code no localStorage
 function salvarQRCode(nome, url, qrData) {
@@ -94,45 +90,60 @@ function excluirConvite(index) {
 // Variável global para o leitor de QR Code
 let html5QrCode;
 
-// Função para iniciar a leitura do QR Code via câmera
 function iniciarLeitura() {
-    console.log("Função iniciarLeitura chamada!");
+    console.log("📷 Iniciando leitura do QR Code...");
     const resultadoValidacao = document.getElementById('resultado-validacao');
-    resultadoValidacao.textContent = 'Aguardando escaneamento do QR Code...';
-    resultadoValidacao.classList.remove('text-danger', 'text-success', 'text-warning');
+    resultadoValidacao.textContent = '🔍 Aguardando escaneamento do QR Code...';
 
-    // Verifica se já existe um leitor ativo
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
-            console.log("Leitor anterior parado, iniciando um novo...");
+            console.log("⏹ Parando leitor ativo...");
             iniciarScanner();
-        }).catch(err => console.error("Erro ao parar o leitor anterior:", err));
+        }).catch(err => console.error("❌ Erro ao parar leitor anterior:", err));
     } else {
         iniciarScanner();
     }
 }
 
-// Função auxiliar para iniciar o scanner
 function iniciarScanner() {
     html5QrCode = new Html5Qrcode("qr-reader");
 
     html5QrCode.start(
-        { facingMode: "environment" }, // Usa a câmera traseira
-        { fps: 10, qrbox: 250 }, // Configuração da leitura
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
         (decodedText) => {
-            console.log("QR Code escaneado:", decodedText);
+            console.log("✅ QR Code escaneado com sucesso:", decodedText);
             validarQRCode(decodedText);
-            html5QrCode.stop();
+            html5QrCode.stop().then(() => console.log("⏹ Leitura finalizada."));
         },
         (errorMessage) => {
-            console.warn("Erro na leitura do QR Code:", errorMessage);
+            console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
         }
     ).catch(err => {
-        console.error("Erro ao iniciar o scanner:", err);
-        alert("Erro ao acessar a câmera. Verifique as permissões!");
+        console.error("❌ Erro ao iniciar scanner:", err);
+        alert("⚠️ Verifique as permissões da câmera!");
     });
 }
 
+function iniciarScanner() {
+    html5QrCode = new Html5Qrcode("qr-reader");
+
+    html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+            console.log("✅ QR Code escaneado com sucesso:", decodedText);
+            validarQRCode(decodedText);
+            html5QrCode.stop().then(() => console.log("⏹ Leitura finalizada."));
+        },
+        (errorMessage) => {
+            console.warn("⚠️ Nenhum QR Code detectado. Tente ajustar a câmera...");
+        }
+    ).catch(err => {
+        console.error("❌ Erro ao iniciar scanner:", err);
+        alert("⚠️ Verifique as permissões da câmera!");
+    });
+}
 // Função para parar a leitura do QR Code
 function pararLeitura() {
     if (html5QrCode) {
