@@ -10,8 +10,8 @@ function gerarQRCode() {
         const divQRCode = document.createElement('div');
         const qrcode = new QRCode(divQRCode, {
             text: qrData,
-            width: 128,
-            height: 128
+            width: 200,
+            height: 200
         });
 
         setTimeout(() => {
@@ -50,7 +50,7 @@ function exibirConvites() {
                 <span class="badge ${convite.status === 'pendente' ? 'bg-warning' : 'bg-success'}">
                     ${convite.status}
                 </span>
-                <button class="btn btn-sm btn-info" onclick="enviarQRCodeWhatsApp('${convite.nome}', '${convite.url}')">
+                <button class="btn btn-sm btn-info" onclick="compartilharQRCode('${convite.nome}', '${convite.url}')">
                     📲 WhatsApp
                 </button>
                 <button class="btn btn-sm btn-danger" onclick="excluirConvite(${index})">
@@ -62,12 +62,25 @@ function exibirConvites() {
     });
 }
 
-// Função para enviar QR Code via WhatsApp
-function enviarQRCodeWhatsApp(nome, qrUrl) {
-    const whatsappMessage = `Olá, ${nome}! Aqui está o seu convite para o evento. Apresente este QR Code na entrada. Baixe a imagem aqui: ${qrUrl}`;
-    const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
+// Função para compartilhar QR Code via WhatsApp ou qualquer app
+function compartilharQRCode(nome, qrUrl) {
+    fetch(qrUrl)
+        .then(res => res.blob()) // Converte a URL em um arquivo Blob
+        .then(blob => {
+            const file = new File([blob], `${nome}-qrcode.png`, { type: blob.type });
 
-    window.open(whatsappLink, '_blank');
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    title: `Convite para ${nome}`,
+                    text: `Olá ${nome}, aqui está seu QR Code para o evento!`,
+                    files: [file]
+                }).then(() => console.log("Compartilhamento concluído!"))
+                  .catch(error => console.error("Erro ao compartilhar:", error));
+            } else {
+                alert("Compartilhamento não suportado neste dispositivo. Tente baixar a imagem manualmente.");
+            }
+        })
+        .catch(error => console.error("Erro ao obter o QR Code:", error));
 }
 
 // Função para excluir convite
