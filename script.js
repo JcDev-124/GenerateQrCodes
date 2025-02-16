@@ -38,7 +38,6 @@ function salvarQRCode(nome, url, qrData) {
     localStorage.setItem('convites', JSON.stringify(convites));
     exibirConvites();
 }
-
 function exibirConvites() {
     const listaConvites = document.getElementById('lista-qrcodes');
     listaConvites.innerHTML = '';
@@ -46,24 +45,27 @@ function exibirConvites() {
     
     convites.forEach((convite, index) => {
         const div = document.createElement('div');
-        div.classList.add('col');
+        div.classList.add('col-12', 'col-md-6', 'col-lg-4');
+
         div.innerHTML = `
-            <div class="d-flex align-items-center justify-content-between p-3 border rounded bg-white shadow-sm">
-                <strong class="text-primary">${convite.nome}</strong>
-                <span class="badge ${convite.status === 'pendente' ? 'bg-warning' : 'bg-success'}">
+            <div class="p-3 border rounded bg-white shadow-sm text-center">
+                <strong class="text-primary d-block mb-2">${convite.nome}</strong>
+                <span class="badge ${convite.status === 'pendente' ? 'bg-warning' : 'bg-success'} d-block mb-3">
                     ${convite.status}
                 </span>
-                <button class="btn btn-sm btn-info" onclick="compartilharQRCode('${convite.nome}', '${convite.url}')">
-                    📲 WhatsApp
+                <button class="btn btn-info w-100 mb-2" onclick="compartilharQRCode('${convite.nome}', '${convite.url}')">
+                    📲 Compartilhar
                 </button>
-                <button class="btn btn-sm btn-danger" onclick="excluirConvite(${index})">
-                    🗑️
+                <button class="btn btn-danger w-100" onclick="excluirConvite(${index})">
+                    🗑️ Excluir
                 </button>
             </div>
         `;
+
         listaConvites.appendChild(div);
     });
 }
+
 
 function compartilharQRCode(nome, qrUrl) {
     fetch(qrUrl)
