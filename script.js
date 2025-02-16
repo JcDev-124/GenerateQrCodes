@@ -145,7 +145,7 @@ function pararLeitura(text) {
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
             console.log("🛑 Leitura interrompida!");
-            if(text == null) {document.getElementById('resultado-validacao').textContent = text;}
+            if(text == null) {document.getElementById('resultado-validacao').textContent = "🛑 Leitura interrompida!";}
             else {document.getElementById('resultado-validacao').textContent = text;}
             html5QrCode = null; // Resetar a instância para permitir reinicialização
         }).catch(err => {
@@ -175,6 +175,7 @@ function validarQRCode(qrData) {
             resultadoValidacao.textContent = `⚠️ Convite já validado em: ${conviteValido.validadoEm}`;
             resultadoValidacao.classList.remove('text-success');
             resultadoValidacao.classList.add('text-warning');
+            pararLeitura(`⚠️ Convite já validado em: ${conviteValido.validadoEm}`)
         }
     } else {
         resultadoValidacao.textContent = '❌ Convite inválido!';
