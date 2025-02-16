@@ -141,11 +141,12 @@ function iniciarScanner() {
     });
 }
 
-function pararLeitura() {
+function pararLeitura(text) {
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
             console.log("🛑 Leitura interrompida!");
-            document.getElementById('resultado-validacao').textContent = 'Leitura interrompida.';
+            if(text == null) {document.getElementById('resultado-validacao').textContent = text;}
+            else {document.getElementById('resultado-validacao').textContent = text;}
             html5QrCode = null; // Resetar a instância para permitir reinicialização
         }).catch(err => {
             console.error("Erro ao parar a leitura:", err);
@@ -169,7 +170,7 @@ function validarQRCode(qrData) {
             resultadoValidacao.textContent = `✅ Convite válido! Nome: ${conviteValido.nome}`;
             resultadoValidacao.classList.remove('text-danger', 'text-warning');
             resultadoValidacao.classList.add('text-success');
-            pararLeitura()
+            pararLeitura("Convite validado")
         } else {
             resultadoValidacao.textContent = `⚠️ Convite já validado em: ${conviteValido.validadoEm}`;
             resultadoValidacao.classList.remove('text-success');
