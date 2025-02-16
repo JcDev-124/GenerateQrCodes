@@ -62,45 +62,42 @@
         exibirConvites();
       }
   
-      // Exibe os convites salvos (sem exibir a imagem do QR Code)
       function exibirConvites() {
-        let convites = JSON.parse(localStorage.getItem('convites')) || [];
-        const lista = document.getElementById("lista-qrcodes");
-        lista.innerHTML = "";
+        const listaConvites = document.getElementById('lista-qrcodes');
+        listaConvites.innerHTML = '';
+        const convites = JSON.parse(localStorage.getItem('convites')) || [];
+    
         convites.forEach((convite, index) => {
-          // Define a classe para a etiqueta de status conforme o valor
-          const statusClass = convite.status === "pendente" 
-            ? "bg-warning" 
-            : convite.status === "validado" 
-              ? "bg-success" 
-              : "bg-secondary";
-          const col = document.createElement("div");
-          col.className = "col";
-          col.innerHTML = `
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">${convite.nome}</h5>
-                <p class="card-text">Status: <span class="badge ${statusClass}">${convite.status}</span></p>
-                <div class="d-flex justify-content-between">
-                  <button class="btn btn-success" onclick="compartilharQRCode('${convite.nome}', '${convite.url}')">Compartilhar</button>
-                  <button class="btn btn-danger" onclick="excluirConvite(${index})">Excluir</button>
+            const div = document.createElement('div');
+            div.classList.add('col-12', 'col-md-6', 'col-lg-4');
+            div.innerHTML = `
+                <div class="p-3 border rounded bg-white shadow-sm text-center">
+                    <strong class="text-primary d-block mb-2">${convite.nome}</strong>
+                    <span class="badge ${convite.status === 'pendente' ? 'bg-warning' : 'bg-success'} d-block mb-3">
+                        ${convite.status}
+                    </span>
+                    <button class="btn btn-info w-100 mb-2" onclick="compartilharQRCode('${convite.nome}', '${convite.url}')">
+                        📲 Compartilhar
+                    </button>
+                    <button class="btn btn-danger w-100" onclick="excluirConvite(${index})">
+                        🗑️ Excluir
+                    </button>
                 </div>
-              </div>
-            </div>
-          `;
-          lista.appendChild(col);
+            `;
+            listaConvites.appendChild(div);
         });
-      }
+    }
   
-      // Filtra os convites conforme o texto digitado no campo de pesquisa
-      function filtrarConvites() {
-        let searchValue = document.getElementById('searchInput').value.toLowerCase();
-        let cards = document.querySelectorAll("#lista-qrcodes .col");
+    function filtrarConvites() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll("#lista-qrcodes > div");
         cards.forEach(card => {
-          let title = card.querySelector('.card-title').textContent.toLowerCase();
+          const title = card.querySelector('strong').textContent.toLowerCase();
           card.style.display = title.includes(searchValue) ? "" : "none";
         });
       }
+      
+      
   
       // Variável que armazena a instância do scanner
       let html5QrCode = null;
