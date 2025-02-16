@@ -62,21 +62,26 @@
         exibirConvites();
       }
   
-      // Exibe os convites salvos em uma grid com cards de mesmo tamanho
+      // Exibe os convites salvos (sem exibir a imagem do QR Code)
       function exibirConvites() {
         let convites = JSON.parse(localStorage.getItem('convites')) || [];
         const lista = document.getElementById("lista-qrcodes");
         lista.innerHTML = "";
         convites.forEach((convite, index) => {
+          // Define a classe para a etiqueta de status conforme o valor
+          const statusClass = convite.status === "pendente" 
+            ? "bg-warning" 
+            : convite.status === "validado" 
+              ? "bg-success" 
+              : "bg-secondary";
           const col = document.createElement("div");
           col.className = "col";
           col.innerHTML = `
-            <div class="card h-100 shadow-sm">
-              <img src="${convite.url}" class="card-img-top" alt="QR Code">
-              <div class="card-body d-flex flex-column">
+            <div class="card shadow-sm">
+              <div class="card-body">
                 <h5 class="card-title">${convite.nome}</h5>
-                <p class="card-text">Status: ${convite.status}</p>
-                <div class="mt-auto d-flex justify-content-between">
+                <p class="card-text">Status: <span class="badge ${statusClass}">${convite.status}</span></p>
+                <div class="d-flex justify-content-between">
                   <button class="btn btn-success" onclick="compartilharQRCode('${convite.nome}', '${convite.url}')">Compartilhar</button>
                   <button class="btn btn-danger" onclick="excluirConvite(${index})">Excluir</button>
                 </div>
@@ -107,7 +112,6 @@
         resultadoValidacao.textContent = '🔍 Aguardando escaneamento do QR Code...';
   
         if (html5QrCode) {
-          console.log("⏹ Parando scanner antes de reiniciar...");
           html5QrCode.stop().then(() => {
             html5QrCode = null;
             iniciarScanner();
@@ -129,7 +133,6 @@
       function iniciarScanner() {
         console.log("📡 Criando nova instância do scanner...");
         if (html5QrCode) {
-          console.warn("⚠️ Scanner já ativo. Parando para reiniciar...");
           html5QrCode.stop().catch(err => console.warn("Erro ao parar scanner:", err));
           html5QrCode = null;
         }
