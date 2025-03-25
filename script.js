@@ -199,3 +199,15 @@
         exibirConvites();
         console.log("📜 Convites carregados na inicialização!");
       };
+
+      function toggleLista() {
+        const lista = document.getElementById("lista-qrcodes");
+        const botao = document.getElementById("toggleLista");
+        if (lista.style.display === "none") {
+          lista.style.display = "block";
+          botao.textContent = "Ocultar";
+        } else {
+          lista.style.display = "none";
+          botao.textContent = "Exibir";
+        }
+      }

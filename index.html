@@ -37,7 +37,10 @@
     <!-- Lista de Convites Criados com campo de pesquisa -->
     <div class="card mb-4">
       <div class="card-body">
-        <h2 class="card-title text-center">Convites Criados</h2>
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="card-title">Convites Criados</h2>
+          <button id="toggleLista" class="btn btn-toggle" onclick="toggleLista()">Ocultar</button>
+        </div>
         <div class="input-group">
           <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar convite" onkeyup="filtrarConvites()">
           <span class="input-group-text">🔍</span>
