@@ -5,71 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Validador de QR Codes - Festa</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 
   <!-- Bibliotecas necessárias -->
   <script src="https://unpkg.com/html5-qrcode@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="script.js"></script>
-
   <style>
-    /* Define altura máxima para a lista de convites com scroll vertical */
-    #lista-qrcodes {
-      max-height: 400px;
-      overflow-y: auto;
-    }
+
   </style>
 </head>
-<body class="bg-light">
+<body>
+
   <div class="container my-5">
-    <!-- Cabeçalho -->
     <div class="text-center mb-5">
-      <h1 class="display-4 text-primary">Sistema de Convites - Festa</h1>
-      <p class="lead text-secondary">Gerencie os convites e valide com QR Codes</p>
+      <h1 class="text-primary">Sistema de Convites</h1>
+      <p class="text-secondary">Crie e valide convites de forma fácil e rápida</p>
     </div>
 
     <!-- Formulário para criar QR Code -->
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
       <div class="card-body">
-        <h2 class="card-title text-center mb-4">Criar Novo Convite</h2>
-        <form id="formQRCode" class="row g-3 justify-content-center">
-          <div class="col-md-6">
-            <input type="text" id="nome" class="form-control" placeholder="Nome do convidado" required>
-          </div>
-          <div class="col-md-2">
-            <button type="button" class="btn btn-primary w-100" onclick="gerarQRCode()">Gerar QR Code</button>
-          </div>
+        <h2 class="card-title text-center">Criar Novo Convite</h2>
+        <form id="formQRCode" class="d-flex justify-content-center">
+          <input type="text" id="nome" class="form-control w-75" placeholder="Nome do convidado" required>
+          <button type="button" class="btn btn-primary ms-3" onclick="gerarQRCode()">Gerar QR Code</button>
         </form>
       </div>
     </div>
 
     <!-- Lista de Convites Criados com campo de pesquisa -->
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
       <div class="card-body">
-        <h2 class="card-title text-center mb-4">Convites Criados</h2>
-        <!-- Campo de pesquisa -->
-        <div class="input-group mb-4">
-          <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar convite por nome" onkeyup="filtrarConvites()">
+        <h2 class="card-title text-center">Convites Criados</h2>
+        <div class="input-group">
+          <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar convite" onkeyup="filtrarConvites()">
           <span class="input-group-text">🔍</span>
         </div>
-        <!-- Container com scroll após atingir o limite de altura -->
-        <div id="lista-qrcodes" class="row row-cols-1 g-4">
+        <div id="lista-qrcodes" class="list-group">
           <!-- Os convites serão inseridos aqui -->
         </div>
       </div>
     </div>
 
     <!-- Formulário para validar QR Code via câmera -->
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
       <div class="card-body">
-        <h2 class="card-title text-center mb-4">Validar QR Code</h2>
-        <div id="camera-container" class="mb-3">
-          <div id="qr-reader" style="width: 100%;"></div>
+        <h2 class="card-title text-center">Validar QR Code</h2>
+        <div id="qr-reader" style="width: 100%;"></div>
+        <div class="d-flex justify-content-center mt-3">
+          <button class="btn btn-success w-100 mb-3" onclick="iniciarLeitura()">Iniciar Leitura</button>
+          <button class="btn btn-danger w-100 mb-3" onclick="pararLeitura()">Parar Leitura</button>
         </div>
-        <button class="btn btn-success w-100 mb-3" onclick="iniciarLeitura()">Iniciar Leitura do QR Code</button>
-        <button class="btn btn-danger w-100 mb-3" onclick="pararLeitura()">Parar Leitura do QR Code</button>
-        <p id="resultado-validacao" class="mt-3 text-center lead"></p>
+        <p id="resultado-validacao" class="text-center lead mt-3"></p>
       </div>
     </div>
   </div>
+
 </body>
 </html>
